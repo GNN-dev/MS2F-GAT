@@ -1,0 +1,15 @@
+# Explicit allowlist: local inputs and generated artifacts stay ignored.
+/*
+!/README.md
+!/requirements.txt
+!/.gitignore
+!/data/
+/data/*
+!/data/README.md
+!/model_tagging/
+/model_tagging/*
+!/model_tagging/__init__.py
+!/model_tagging/model.py
+!/model_tagging/data.py
+!/model_tagging/train.py
+!/model_tagging/metrics.py

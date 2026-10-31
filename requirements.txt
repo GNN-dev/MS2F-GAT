@@ -1,0 +1,7 @@
+# Install a platform-compatible PyTorch/PyG build as described in README.
+numpy
+torch
+torch-geometric
+scikit-learn
+sentence-transformers
+joblib
