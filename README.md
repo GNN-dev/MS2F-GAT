@@ -36,16 +36,25 @@ model_tagging/
   train.py       training, validation selection and evaluation
   metrics.py     multi-label evaluation metrics
   __init__.py
+llm_zero_shot/
+  data.py        paired raw-model and canonical-graph inputs, prompts
+  api.py         API requests, JSON validation and rate limiting
+  runner.py      preparation, preflight, resumable calls and reporting
+  metrics.py     five metrics, per-label scores and bootstrap intervals
+  __init__.py
+docs/
+  llm_zero_shot.md  zero-shot workflow and configuration interface
 data/
   README.md      data sources and input specification
 requirements.txt
 README.md
 ```
 
-This release provides the core model and an interface for training on
-prepared property graphs. Raw-model conversion, original benchmark splits,
-experiment-specific configurations and comparative baseline runners are
-outside its scope. The included training entry point uses random splitting,
+This release provides the core model, an interface for training on
+prepared property graphs, and the zero-shot LLM evaluation pipeline for
+Raw-XMI and Full-Graph inputs. Raw-model conversion, original benchmark
+splits, experiment-specific configurations and supervised baseline runners
+are outside its scope. The included training entry point uses random splitting,
 unweighted binary cross-entropy and validation sample-F1 for checkpoint
 selection; it is not the complete protocol used to produce the manuscript's
 experimental tables.
@@ -59,6 +68,7 @@ python -m venv .venv
 # Activate .venv using the command appropriate for your shell.
 python -m pip install -r requirements.txt
 python -m model_tagging.train --help
+python -m llm_zero_shot.runner --help
 ```
 
 The implementation uses PyTorch, PyTorch Geometric, Sentence Transformers,
@@ -115,6 +125,36 @@ All listed fields are required. A random seed is generated and recorded by
 default; specify `--seed` to reuse a chosen seed. The split is random and does
 not guarantee that every rare label appears in each partition. Record the
 software environment alongside the run configuration when comparing runs.
+
+## Zero-shot LLM experiments
+
+The zero-shot pipeline evaluates the same models under **Raw-XMI** (complete
+source artifact) and **Full-Graph** (complete canonical graph JSON) inputs.
+It includes the experimental system/user prompts, stable label IDs, strict
+binary JSON decisions, paired context filtering, provider preflight checks,
+request-level caches, failure handling and repeated-run summaries.
+Endpoints, model IDs and all evaluation settings are supplied locally.
+
+Follow [Zero-shot LLM evaluation](docs/llm_zero_shot.md) to prepare the data
+and configuration, then run the offline preparation:
+
+```bash
+python -m llm_zero_shot.runner --config llm_config.json --mode prepare
+python -m llm_zero_shot.runner --config llm_config.json --mode verify
+```
+
+To call the configured APIs and summarize the responses:
+
+```bash
+python -m llm_zero_shot.runner --config llm_config.json --mode preflight --execute-paid-api-calls
+python -m llm_zero_shot.runner --config llm_config.json --mode run --execute-paid-api-calls
+python -m llm_zero_shot.runner --config llm_config.json --mode report
+```
+
+Keys are read from environment variables. Responses, metrics and run
+manifests remain local. Summary means and sample standard deviations are
+computed from completed evaluations; a single evaluation has no run-SD
+estimate. The runner does not generate or perturb experimental scores.
 
 ## Evaluation metrics
 

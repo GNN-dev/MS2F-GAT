@@ -13,3 +13,13 @@
 !/model_tagging/data.py
 !/model_tagging/train.py
 !/model_tagging/metrics.py
+!/llm_zero_shot/
+/llm_zero_shot/*
+!/llm_zero_shot/__init__.py
+!/llm_zero_shot/api.py
+!/llm_zero_shot/data.py
+!/llm_zero_shot/metrics.py
+!/llm_zero_shot/runner.py
+!/docs/
+/docs/*
+!/docs/llm_zero_shot.md

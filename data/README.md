@@ -51,3 +51,12 @@ The complete target-label list is supplied through `label_names`.
 
 The original model files, labels, locally generated graph records and fitted
 preprocessing artifacts should remain in the user's local data directories.
+
+## Zero-shot LLM inputs
+
+The Raw-XMI / Full-Graph evaluation uses its original canonical benchmark
+graph format, a label CSV, a supplied test split and raw model files.
+It does not consume the training JSONL above. See
+[Zero-shot LLM evaluation](../docs/llm_zero_shot.md) for all fields, archive
+and local-file adapters, configuration and commands. Candidate labels are
+part of the prompt; gold assignments and graph identity metadata are not.
